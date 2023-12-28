@@ -32,7 +32,7 @@ const upload = multer({
   storage,
 });
 router.post("/send", sendData);
-router.get("/fetch", fetchData);
+router.get("/fetch/:accId", fetchData);
 router.post("/sendTran", upload.single("image"), (req, res) => {
   console.log("req.body : ",req.body)
   console.log("req.file : ",req.file)

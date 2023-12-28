@@ -19,13 +19,14 @@ import {
   updateExpenses,
   fetchExpensesUserAddedItemList,
   DeleteExpensesUserAddedItemList,
-  UpdateExpensesUserAddedItemList
+  UpdateExpensesUserAddedItemList,
+  updateCash
 
 } from "../controllers/expenses.js";
 const router = express.Router();
 
-router.get("/fetchExpenseCategory", fetchExpenseCategory);
-router.get("/fetchExpenseList", fetchExpenseList);
+router.get("/fetchExpenseCategory/:accId", fetchExpenseCategory);
+router.get("/fetchExpenseList/:accId", fetchExpenseList);
 router.post("/addExpenseCategory", addExpenseCategory);
 router.post("/addExpenseList", addExpenseList);
 router.delete("/delExpenseItemFromList/:eiid", delExpenseItemFromList);
@@ -34,16 +35,17 @@ router.delete("/delExpenseCategory/:ecid", delExpenseCategory);
 router.put("/updateExpenseCategoryData/:ecid", updateExpenseCategoryData);
 
 router.post("/addExpenses", addExpenses);
-router.get("/fetchExpensesData", fetchExpensesData);
-router.get("/fetchExpensesPrefixData", fetchExpensesPrefixData);
+router.get("/fetchExpensesData/:accId", fetchExpensesData);
+router.get("/fetchExpensesPrefixData/:accId", fetchExpensesPrefixData);
 router.get("/fetchExpensesRightTran/:expId", fetchExpensesRightTran);
 router.get("/fetchExpensesTran/:expId", fetchExpensesTran);
 router.delete("/delexpenses/:expId", delexpenses);
 
-router.get("/fetchExpensesUserAddedItemList/:cnct_Id1/:cnct_Id2", fetchExpensesUserAddedItemList);
+router.get("/fetchExpensesUserAddedItemList/:cnct_Id1/:accId/:cnct_Id2", fetchExpensesUserAddedItemList);
 router.delete("/DeleteExpensesUserAddedItemList/:expId",DeleteExpensesUserAddedItemList);
 router.put("/updateExpenses/:expId",updateExpenses);
 router.post("/UpdateExpensesUserAddedItemList",UpdateExpensesUserAddedItemList)
 
+router.put("/updateCash/:expId",updateCash);
 
 export default router;

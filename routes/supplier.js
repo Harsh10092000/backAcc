@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 router.post("/sendData", sendData);
-router.get("/fetchData", fetchData);
+router.get("/fetchData/:accId", fetchData);
 router.post("/sendTran", upload.single("image"), (req, res) => {
   const q =
     "INSERT INTO supplier_tran(`sup_tran_pay`,`sup_tran_receive`,`sup_tran_description`,`sup_tran_date`,`sup_tran_cnct_id`, `sup_balance` ,`sup_tran_bill`) VALUES (?)";

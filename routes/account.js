@@ -1,5 +1,5 @@
 import express from "express";
-import { delData, fetchData } from "../controllers/account.js";
+import { delData, fetchData, fetch, fetchStaffData,updateAccData, checkAcc } from "../controllers/account.js";
 import multer from "multer";
 import path from "path";
 import { db } from "../connect.js";
@@ -27,9 +27,9 @@ router.post(
     { name: "signature", maxCount: 1 },
   ]),
   (req, res) => {
-    console.log(req.files);
+    console.log(req.body);
     const q =
-      "INSERT into business_account (`business_name`,`business_address`,`business_gst`,`business_type`,`business_nature`,`business_logo`,`business_signature`) VALUES(?)";
+      "INSERT into business_account (`business_name`,`business_address`,`business_gst`,`business_type`,`business_nature`,`business_logo`,`business_signature`, `business_bank_acc`, `business_payee_name`, `business_acc_no`, `business_ifsc_code`, `user_id`) VALUES(?)";
     const values = [
       req.body.business_name,
       req.body.business_address,
@@ -38,6 +38,13 @@ router.post(
       req.body.business_nature,
       req.files.signature[0] ? req.files.signature[0].filename : "",
       req.files.business[0] ? req.files.business[0].filename : "",
+
+      req.body.business_bank_name,
+      req.body.business_payee_name,
+      req.body.business_acc_no,
+      req.body.business_ifsc_code,
+
+      req.body.user_id,
     ];
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
@@ -45,6 +52,11 @@ router.post(
     });
   }
 );
-router.get("/fetchData", fetchData);
-router.delete("/delData", delData);
+router.get("/fetchData/:accId", fetchData);
+router.delete("/delData/:accId", delData);
+router.get("/fetch/:uId",fetch);
+router.get("/fetchStaffData/:uId",fetchStaffData);
+router.put("/updateAccData/:uId",updateAccData);
+router.get("/checkAcc/:uId",checkAcc);
+
 export default router;

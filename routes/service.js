@@ -10,13 +10,15 @@ import {
   sendTran,
   updateData,
   updateTran,
-  fetchSerTranData
+  fetchSerTranData,
+  fetchSacCodes,
+  fetchSacCodes1
 } from "../controllers/service.js";
 
 const router = express.Router();
 
 router.post("/sendData", sendData);
-router.get("/fetchData", fetchData);
+router.get("/fetchData/:accId", fetchData);
 router.get("/fetchDataid/:serId", fetchDataById);
 router.post("/sendTran", sendTran);
 router.get("/fetchTranid/:cnctId", fetchTranid);
@@ -26,5 +28,8 @@ router.delete("/delTran/:tranId", delTran);
 router.get("/fetchTranData/:tranid", fetchTranData);
 router.put("/updateTran/:serTranid", updateTran);
 router.get("/fetchSerTranData", fetchSerTranData);
+router.get("/fetchSacCodes", fetchSacCodes);
+router.get("/fetchSacCodes1", fetchSacCodes1);
+
 
 export default router;

@@ -41,8 +41,8 @@ export const updateStockQty = (req, res) => {
 };
 
 export const fetchProductData = (req, res) => {
-  const q = "SELECT * from product_module";
-  db.query(q, (err, data) => {
+  const q = "SELECT * from product_module where acc_id = ?";
+  db.query(q, [req.params.accId] , (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -56,10 +56,11 @@ export const fetchProductTran = (req, res) => {
   });
 };
 
+
 export const fetchTotalStockValue = (req, res) => {
   const q =
-    "select distinct sum(balance_stock * sale_price) as stockValue, (select count(*)  from accbook.product_module where balance_stock <= low_stock) as lowStockProducts from accbook.product_module;";
-  db.query(q, req.params.prodId, (err, data) => {
+    "select product_module.*,  (sum(IFNULL(product_stock_in,0)) - sum(IFNULL(product_stock_out,0))) <= product_module.low_stock as lowStockStatus , product_module.low_stock , sum(IFNULL(product_stock_in,0)) - sum(IFNULL(product_stock_out,0)) as balStock from stock_data LEFT JOIN product_module ON stock_data.cnct_id = product_module.product_id where acc_id = ? group by cnct_id;";
+  db.query(q, req.params.accId, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -89,9 +90,17 @@ export const addStockIn = (req, res) => {
 };
 
 export const fetchStockInTran = (req, res) => {
-  const q = "SELECT * from stock_data where cnct_id = ?";
+  const q = "SELECT * from stock_data where cnct_id = ? order by tran_id DESC";
   const values = req.params.c_id;
   db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchStockData = (req, res) => {
+  const q = "SELECT * from stock_data";
+  db.query(q,(err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -106,7 +115,7 @@ export const fetchProductUnits = (req, res) => {
 };
 
 export const fetchProductHsnCodes = (req, res) => {
-  const q = "SELECT * from hsn_codes";
+  const q = "SELECT * from convertcsv";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

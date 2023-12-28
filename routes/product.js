@@ -11,6 +11,7 @@ import {
   fetchTotalStockValue,
   delproduct,
   updateProduct,
+  fetchStockData,
 } from "../controllers/product.js";
 import multer from "multer";
 import path from "path";
@@ -32,7 +33,7 @@ const upload = multer({
 });
 router.post("/addProduct", upload.single("image"), (req, res) => {
   const q =
-    "INSERT INTO product_module (`product_name`, `primary_unit`, `secondary_unit`, `sale_price`, `purchase_price`, `tax`, `opening_stock`, `low_stock`, `balance_stock`, `entry_date`, `hsn_code`, `hsn_desc`, `sgst`, `igst`, `cess` , `conversion` , `cgst`,`product_image`) Values (?)";
+    "INSERT INTO product_module (`product_name`, `primary_unit`, `secondary_unit`, `sale_price`, `purchase_price`, `tax`, `opening_stock`, `low_stock`, `balance_stock`, `entry_date`, `hsn_code`, `hsn_desc`, `sgst`, `igst`, `cess` , `conversion` , `cgst`,`product_image` , `acc_id`) Values (?)";
   const values = [
     req.body.product_name,
     req.body.primary_unit,
@@ -52,21 +53,42 @@ router.post("/addProduct", upload.single("image"), (req, res) => {
     req.body.conversion,
     req.body.cgst,
     req.file ? req.file.filename : "",
+    req.body.acc_id,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
-    return res.status(200).json("Updated");
+    const id = data.insertId;
+    const q =
+    "INSERT INTO stock_data (`product_stock_in` ,`primary_unit`,`secondary_unit`, `purchase_price`, `product_desc`,`entry_date`,`cnct_id`,`selected_unit`, `balance_stock`) VALUES(?)";
+  const values = [
+    
+    req.body.opening_stock,
+    req.body.primary_unit,
+    req.body.secondary_unit,
+    req.body.purchase_price,
+    "Opening Balance",
+    req.body.entry_date,
+    id, 
+    req.body.primary_unit,
+    req.body.balance_stock,
+  ];
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Transaction has been Entered");
+  });
+    //return res.status(200).json("Updated");
   });
 });
-router.get("/fetchProductData", fetchProductData);
+router.get("/fetchProductData/:accId", fetchProductData);
 router.get("/fetchProductTran/:prodId", fetchProductTran);
 router.post("/addStockIn", addStockIn);
 router.get("/fetchStockInTran/:c_id", fetchStockInTran);
+router.get("/fetchStockData", fetchStockData);
 
 router.get("/fetchProductUnits", fetchProductUnits);
 router.get("/fetchProductHsnCodes", fetchProductHsnCodes);
 router.put("/updateStockQty/:productid", updateStockQty);
-router.get("/fetchTotalStockValue", fetchTotalStockValue);
+router.get("/fetchTotalStockValue/:accId", fetchTotalStockValue);
 router.delete("/delproduct/:pId", delproduct);
 
 //router.put("/updateProduct/:prodId", updateProduct);

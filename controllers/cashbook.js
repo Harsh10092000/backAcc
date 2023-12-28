@@ -17,8 +17,8 @@ export const sendData = (req, res) => {
 };
 
 export const fetchData = (req, res) => {
-  const q = "SELECT * from cashbook_module";
-  db.query(q, (err, data) => {
+  const q = "SELECT * from cashbook_module where cash_acc_id = ? order by cash_id DESC";
+  db.query(q, [req.params.accId] ,(err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -58,13 +58,8 @@ export const updateData = (req, res) => {
 };
 
 export const fetchDate = (req, res) => {
-  console.log(req.params.cashDate)
-  const values = [
-    req.params.cashDate 
-  ]
-  console.log("values : ", values)
-  const q = "SELECT * from cashbook_module WHERE cash_date = ? ";
-  db.query(q, [values ], (err, data) => {
+  const q = "SELECT * from cashbook_module WHERE cash_date = ? and cash_acc_id = ?  ";
+  db.query(q, [req.params.cashDate , req.params.accId] ,(err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });

@@ -29,23 +29,25 @@ const upload = multer({
 
 router.post("/sendData", upload.single("image"), (req, res) => {
   const q =
-    "INSERT INTO cashbook_module (`cash_pay`,`cash_receive`,`cash_mode`,`cash_date`,`cash_description`,`cash_bill`) VALUES (?)";
-  const values = [
+    "INSERT INTO cashbook_module (`cash_pay`,`cash_receive`,`cash_mode`,`cash_date`,`cash_description`,`cash_bill` , `cash_acc_id`) VALUES (?)";
+    console.log(req.body);
+    const values = [
     req.body.cash_pay,
     req.body.cash_receive,
     req.body.cash_mode,
     req.body.cash_date,
     req.body.cash_description,
     req.file ? req.file.filename : "",
+    req.body.cash_acc_id,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("INSERTED SUCCESSFULLY");
   });
 });
-router.get("/fetchData", fetchData);
+router.get("/fetchData/:accId", fetchData);
 router.get("/fetchDataid/:cashId", fetchDataid);
 router.delete("/deleteData/:cashid", deleteData);
 router.put("/updateData/:cashUP", updateData);
-router.get("/fetchDate", fetchDate);
+router.get("/fetchDate/:cashDate/:accId", fetchDate);
 export default router;

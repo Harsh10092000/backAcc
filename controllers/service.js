@@ -2,7 +2,7 @@ import { db } from "../connect.js";
 
 export const sendData = (req, res) => {
   const q =
-    "INSERT INTO service_module (`ser_name`,`ser_unit`,`ser_price`,`ser_tax_included`, `ser_sac` , `ser_sac_desc` , `ser_sgst` , `ser_igst`, `ser_cgst`, `ser_cess` ) VALUES(?)";
+    "INSERT INTO service_module (`ser_name`,`ser_unit`,`ser_price`,`ser_tax_included`, `ser_sac` , `ser_sac_desc` , `ser_sgst` , `ser_igst`, `ser_cgst`, `ser_cess`, `ser_acc_id` ) VALUES(?)";
     console.log("values : ",req.body)
     const values = [
     req.body.ser_name,
@@ -15,6 +15,7 @@ export const sendData = (req, res) => {
     req.body.ser_igst,
     req.body.ser_cgst,
     req.body.ser_cess,
+    req.body.ser_acc_id,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -23,8 +24,8 @@ export const sendData = (req, res) => {
 };
 
 export const fetchData = (req, res) => {
-  const q = "SELECT * from service_module";
-  db.query(q, (err, data) => {
+  const q = "SELECT * from service_module where ser_acc_id = ?";
+  db.query(q, [req.params.accId] ,(err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -62,8 +63,26 @@ export const fetchSerTranData = (req, res) => {
   });
 };
 
+
+export const fetchSacCodes = (req, res) => {
+  const q = "SELECT * FROM sac";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchSacCodes1 = (req, res) => {
+  const q = "SELECT id, sac_code as hsn_code, sac_desc as hsn_desc, sac_igst as igst ,  sac_igst/2 as cgst, sac_igst/2 as sgst, '0' as cess  FROM sac";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
 export const fetchTranid = (req, res) => {
-  const q = "SELECT * from service_tran WHERE ser_cnct_id = ?";
+  const q = "SELECT * from service_tran WHERE ser_cnct_id = ? order by ser_tran_id DESC";
   db.query(q, [req.params.cnctId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

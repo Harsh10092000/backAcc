@@ -6,7 +6,7 @@ export const sendData = (req, res) => {
     if (err) return res.status(500).json(err);
     if (data.length) return res.status(409).json("Number already Registered");
     const q =
-      "INSERT INTO supplier_module(`sup_name`,`sup_number`,`sup_amt`,`sup_amt_type`,`sup_gstin`,`sup_sflat`,`sup_sarea`,`sup_spin`,`sup_scity`,`sup_sstate`,`sup_bflat`,`sup_barea`,`sup_bpin`,`sup_bcity`,`sup_bstate`) VALUES (?)";
+      "INSERT INTO supplier_module(`sup_name`,`sup_number`,`sup_amt`,`sup_amt_type`,`sup_gstin`,`sup_sflat`,`sup_sarea`,`sup_spin`,`sup_scity`,`sup_sstate`,`sup_bflat`,`sup_barea`,`sup_bpin`,`sup_bcity`,`sup_bstate` , `sup_acc_id`) VALUES (?)";
     const values = [
       req.body.sup_name,
       req.body.sup_number,
@@ -23,25 +23,59 @@ export const sendData = (req, res) => {
       req.body.sup_bpin,
       req.body.sup_bcity,
       req.body.sup_bstate,
+      req.body.sup_acc_id,
     ];
 
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("Supllier Data has been entered");
+      //return res.status(200).json("Supllier Data has been entered");
+      const id = data.insertId;
+      const values2 = [
+        req.body.sup_amt,
+        req.body.sup_date,
+        id
+      ];
+      console.log("req.body : " , req.body);
+      if(req.body.sup_amt_type === 'receive') {
+        
+      const q =
+        "INSERT INTO supplier_tran(`sup_tran_receive`,`sup_tran_date`,`sup_tran_cnct_id`) VALUES(?)";
+        db.query(q, [values2], (err, data) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json("Data has been entered");
+        });
+      } else {
+        
+        const q =
+        "INSERT INTO supplier_tran(`sup_tran_pay`,`sup_tran_date`,`sup_tran_cnct_id`) VALUES(?)";
+        db.query(q, [values2], (err, data) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json("Data has been entered");
+        });
+      }
     });
   });
 };
 
+// export const fetchData = (req, res) => {
+//   const q = "SELECT * from supplier_module where sup_acc_id = ?";
+//   db.query(q, [req.params.accId] , (err, data) => {
+//     if (err) res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
+
 export const fetchData = (req, res) => {
-  const q = "SELECT * from supplier_module";
-  db.query(q, (err, data) => {
+  const q = "select supplier_module.*, sum(IFNULL(supplier_tran.sup_tran_pay,0)) - sum(IFNULL(supplier_tran.sup_tran_receive,0)) as sup_total_amt from supplier_tran LEFT JOIN supplier_module ON supplier_tran.sup_tran_cnct_id = supplier_module.sup_id where supplier_module.sup_acc_id = ? group by supplier_tran.sup_tran_cnct_id ;";
+  db.query(q, [req.params.accId] , (err, data) => {
     if (err) res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
 
 export const fetchTran = (req, res) => {
-  const q = "SELECT * from supplier_tran  where sup_tran_cnct_id = ?";
+  const q = "SELECT * from supplier_tran  where sup_tran_cnct_id = ? order by sup_tran_id DESC";
   db.query(q, [req.params.supId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
