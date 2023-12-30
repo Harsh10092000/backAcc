@@ -27,7 +27,8 @@ router.post(
     { name: "signature", maxCount: 1 },
   ]),
   (req, res) => {
-    console.log(req.body);
+    console.log("req.body : " , req.body);
+    console.log("req.file : ",req.file);
     const q =
       "INSERT into business_account (`business_name`,`business_address`,`business_gst`,`business_type`,`business_nature`,`business_logo`,`business_signature`, `business_bank_acc`, `business_payee_name`, `business_acc_no`, `business_ifsc_code`, `user_id`) VALUES(?)";
     const values = [
@@ -36,8 +37,8 @@ router.post(
       req.body.business_gst,
       req.body.business_type,
       req.body.business_nature,
-      req.files.signature[0] ? req.files.signature[0].filename : "",
-      req.files.business[0] ? req.files.business[0].filename : "",
+      req.files.signature ? req.files.signature[0].filename : "",
+      req.files.business ? req.files.business[0].filename : "",
 
       req.body.business_bank_name,
       req.body.business_payee_name,
@@ -48,7 +49,7 @@ router.post(
     ];
     db.query(q, [values], (err, data) => {
       if (err) return res.status(500).json(err);
-      return res.status(200).json("INSERTED SUCCESSFULLY");
+      return res.status(200).json(data.insertId);
     });
   }
 );

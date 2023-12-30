@@ -126,6 +126,16 @@ export const fetchAll = (req, res) => {
   });
 };
 
+export const fetchTotal = (req, res) => {
+  console.log(req.params.accId)
+  const q = `SELECT sum(customer_tran.tran_pay) as payTotal , sum(customer_tran.tran_receive) as receiveTotal FROM customer_module left join customer_tran on customer_tran.cnct_id =  customer_module.cust_id  where cust_acc_id = ? group by customer_module.cust_acc_id;`
+  db.query(q, [req.params.accId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  })
+};
+
+
 export const fetchLastTran = (req, res) => {
   const q =
     "SELECT * from customer_tran where cnct_id = ? ORDER BY tran_id DESC LIMIT 1";

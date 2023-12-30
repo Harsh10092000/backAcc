@@ -11,7 +11,8 @@ import {
   fetchTranid,
   deleteTran,
   fetchDataUsingId,
-  fetchLastTran
+  fetchLastTran,
+  fetchTotal,
 } from "../controllers/customer.js";
 import multer from "multer";
 import path from "path";
@@ -34,10 +35,10 @@ const upload = multer({
 router.post("/send", sendData);
 router.get("/fetch/:accId", fetchData);
 router.post("/sendTran", upload.single("image"), (req, res) => {
-  console.log("req.body : ",req.body)
-  console.log("req.file : ",req.file)
+  console.log("req.body : ", req.body);
+  console.log("req.file : ", req.file);
   const q =
-    "INSERT INTO customer_tran(`tran_pay`,`tran_receive`,`tran_description`,`tran_date`,`cnct_id`,`tran_bill` , `balance`) VALUES(?)";
+    "INSERT INTO customer_tran(`tran_pay`,`tran_receive`,`tran_description`,`tran_date`,`cnct_id`,`tran_bill` ) VALUES(?)";
   const values = [
     req.body.tran_pay,
     req.body.tran_receive,
@@ -45,7 +46,6 @@ router.post("/sendTran", upload.single("image"), (req, res) => {
     req.body.tran_date,
     req.body.cnct_id,
     req.file ? req.file.filename : "",
-    req.body.balance,
   ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -61,19 +61,19 @@ router.get("/fetchCust/:custId", fetchCustomerData);
 //router.put("/updateTran/:tranId", updateTran);
 router.put("/updateTran/:tranId", upload.single("image"), (req, res) => {
   const q =
-  "UPDATE customer_tran SET tran_pay = ?, tran_receive = ? , tran_description = ? , tran_date = ? , balance = ? , tran_bill = ? where tran_id = ?";
-  console.log("req.body : ",req.body)
-  console.log("req.file : ",req.file)
+    "UPDATE customer_tran SET tran_pay = ?, tran_receive = ? , tran_description = ? , tran_date = ? , tran_bill = ? where tran_id = ?";
+  console.log("req.body : ", req.body);
+  console.log("req.file : ", req.file);
   const values = [
     req.body.tran_pay,
     req.body.tran_receive,
     req.body.tran_description,
     req.body.tran_date,
-    req.body.balance,
+
     req.file ? req.file.filename : "",
-    req.params.tranId
+    req.params.tranId,
   ];
-  console.log("values : ",values)
+  console.log("values : ", values);
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Updated Successfully");
@@ -84,4 +84,6 @@ router.delete("/deleteTran/:tran_id", deleteTran);
 router.get("/fetchDataUsingId/:user_id", fetchDataUsingId);
 router.get("/fetchTranid/:tid", fetchTranid);
 router.get("/fetchLastTran/:cnct_id", fetchLastTran);
+router.get("/fetchTotal/:accId", fetchTotal);
+
 export default router;

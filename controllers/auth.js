@@ -41,8 +41,12 @@ export const login = (req, res) => {
       });
     } 
   } else {
-    const q = "INSERT INTO login_module (log_email) Value (?)";
-      db.query(q, req.body.inputs, (err, data) => {
+    const q = "INSERT INTO login_module (log_email , log_user) Value (?)";
+    const values1 = [
+      req.body.inputs, 
+      "1",
+    ]
+      db.query(q, [values1], (err, data) => {
         if (err) return res.status(500).json(err);
         const q = "SELECT * from login_module WHERE log_id = ?";
         db.query(q, data.insertId, (err, data) => {

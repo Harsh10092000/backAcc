@@ -97,6 +97,16 @@ export const fetchSup = (req, res) => {
   });
 };
 
+
+export const fetchTotal = (req, res) => {
+  const q = `SELECT sum(supplier_tran.sup_tran_pay) as payTotal , sum(supplier_tran.sup_tran_receive) as receiveTotal FROM supplier_module left join supplier_tran on supplier_tran.sup_tran_cnct_id =  supplier_module.sup_id  where sup_acc_id = ? group by supplier_module.sup_acc_id;`
+  db.query(q, [req.params.accId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  })
+};
+
+
 export const delSup = (req, res) => {
   const q =
     "DELETE supplier_module.* , supplier_tran.* from supplier_module LEFT JOIN supplier_tran ON supplier_module.sup_id = supplier_tran.sup_tran_cnct_id where sup_id = ?";

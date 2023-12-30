@@ -11,7 +11,8 @@ import {
   updateSup,
   //updateTran,
   fetchSupDataUsingId,
-  fetchSupLastTran
+  fetchSupLastTran,
+  fetchTotal
 } from "../controllers/supplier.js";
 import { db } from "../connect.js";
 import multer from "multer";
@@ -34,14 +35,14 @@ router.post("/sendData", sendData);
 router.get("/fetchData/:accId", fetchData);
 router.post("/sendTran", upload.single("image"), (req, res) => {
   const q =
-    "INSERT INTO supplier_tran(`sup_tran_pay`,`sup_tran_receive`,`sup_tran_description`,`sup_tran_date`,`sup_tran_cnct_id`, `sup_balance` ,`sup_tran_bill`) VALUES (?)";
+    "INSERT INTO supplier_tran(`sup_tran_pay`,`sup_tran_receive`,`sup_tran_description`,`sup_tran_date`,`sup_tran_cnct_id` ,`sup_tran_bill`) VALUES (?)";
   const values = [
     req.body.sup_tran_pay,
     req.body.sup_tran_receive,
     req.body.sup_tran_description,
     req.body.sup_tran_date,
     req.body.sup_tran_cnct_id,
-    req.body.sup_balance,
+   
     req.file ? req.file.filename : "",
   ];
   db.query(q, [values], (err, data) => {
@@ -62,14 +63,14 @@ router.put("/updateTran/:tranId", upload.single("image"), (req, res) => {
   console.log("req.body : ",req.body)
   console.log("req.file : ",req.file)
   const q =
-  "UPDATE supplier_tran SET sup_tran_pay = ?, sup_tran_receive = ? , sup_tran_description = ? , sup_tran_date = ? , sup_balance = ? , sup_tran_bill = ? where sup_tran_id = ?";
+  "UPDATE supplier_tran SET sup_tran_pay = ?, sup_tran_receive = ? , sup_tran_description = ? , sup_tran_date = ?  , sup_tran_bill = ? where sup_tran_id = ?";
 
   const values = [
     req.body.sup_tran_pay,
     req.body.sup_tran_receive,
     req.body.sup_tran_description,
     req.body.sup_tran_date,
-    req.body.sup_balance,
+    
     req.file ? req.file.filename : "",
     req.params.tranId
   ];
@@ -80,8 +81,13 @@ router.put("/updateTran/:tranId", upload.single("image"), (req, res) => {
   });
 });
 
+
+
+
+
 router.get("/fetchSupDataUsingId/:sup_id", fetchSupDataUsingId,);
 router.get("/fetchSupLastTran/:sup_tran_cnct_id", fetchSupLastTran);
+router.get("/fetchTotal/:accId", fetchTotal);
 
 export default router;
   
