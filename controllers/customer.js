@@ -136,6 +136,9 @@ export const fetchTotal = (req, res) => {
 };
 
 
+
+
+
 export const fetchLastTran = (req, res) => {
   const q =
     "SELECT * from customer_tran where cnct_id = ? ORDER BY tran_id DESC LIMIT 1";

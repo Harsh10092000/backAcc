@@ -230,3 +230,10 @@ export const UpdateExpensesUserAddedItemList = (req, res) => {
     return res.status(200).json("Data has been entered");
   });
 };
+
+
+// export const test1 = (req,res)=>{
+//   console.log("req.body" , req.body );
+//   if (err) return res.status(500).json(err);
+//   return res.status(200).json("Data has been entered");
+// };

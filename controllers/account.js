@@ -1,21 +1,21 @@
 import { db } from "../connect.js";
 
-export const sendData = (req, res) => {
-  const q =
-    "INSERT into business_account (`business_name`,`business_address`,`business_gst`,`business_type`,`business_nature`, `user_id`) VALUES(?)";
-  const values = [
-    req.body.business_name,
-    req.body.business_address,
-    req.body.business_gst,
-    req.body.business_type,
-    req.body.business_nature,
-    req.body.user_id,
-  ];
-  db.query(q, [values], (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json("INSERTED SUCCESSFULLY");
-  });
-};
+// export const sendData = (req, res) => {
+//   const q =
+//     "INSERT into business_account (`business_name`,`business_address`,`business_gst`,`business_type`,`business_nature`, `user_id`) VALUES(?)";
+//   const values = [
+//     req.body.business_name,
+//     req.body.business_address,
+//     req.body.business_gst,
+//     req.body.business_type,
+//     req.body.business_nature,
+//     req.body.user_id,
+//   ];
+//   db.query(q, [values], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json("INSERTED SUCCESSFULLY");
+//   });
+// };
 
 export const fetch = (req, res) => {
   console.log(req.params.uId)
@@ -26,22 +26,29 @@ export const fetch = (req, res) => {
   });
 };
 
-export const updateAccData = (req, res) => {
-  const q =
-    "UPDATE business_account SET business_name = ? , business_address = ?, business_gst = ?, business_type = ?, business_nature = ? WHERE business_id = ?";
-  const values = [
-    req.body.business_name,
-    req.body.business_address,
-    req.body.business_gst,
-    req.body.business_type,
-    req.body.business_nature,
-    req.body.business_id,
-  ];
-  db.query(q, values, (err, data) => {
-    if (err) return res.status(500).json(err);
-    return res.status(200).json("Updated Successfully");
-  });
-};
+// export const updateAccData = (req, res) => {
+//   const q =
+//     "UPDATE business_account SET business_name = ? , business_address = ?, business_gst = ?, business_type = ?, business_nature = ? , business_logo = ? , business_signature = ?, business_bank_acc = ?, business_acc_no = ?, business_ifsc_code = ?, business_payee_name = ? WHERE business_id = ?";
+//     console.log(req.body)
+//     const values = [
+//     req.body.business_name,
+//     req.body.business_address,
+//     req.body.business_gst,
+//     req.body.business_type,
+//     req.body.business_nature,
+//     req.body.business_logo,
+//     req.body.business_signature,
+//     req.body.business_bank_acc,
+//     req.body.business_acc_no,
+//     req.body.business_ifsc_code,
+//     req.body.business_payee_name,
+//     req.body.business_id,
+//   ];
+//   db.query(q, values, (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json("Updated Successfully");
+//   });
+// };
 
 
 export const fetchData = (req, res) => {
@@ -61,13 +68,7 @@ export const checkAcc = (req, res) => {
   });
 };
 
-// export const delData = (req, res) => {
-//   const q = "DELETE business_account.* where business_id = ?";
-//   db.query(q, [req.params.accId], (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     return res.status(200).json(data);
-//   });
-// };
+
 
 // export const delData = (req, res) => {
 //   const q = "DELETE from business_account where business_id = ?";
@@ -77,6 +78,26 @@ export const checkAcc = (req, res) => {
 //     return res.status(200).json("Deleted Successfully");
 //   });
 // };
+
+// const delAcc = (id, res) => {
+//   const q = "DELETE business_account.* where business_id = ?";
+//   db.query(q, id, (err, data) => {
+//     if (err) return res.status(500).json(err); 
+//   });
+// };
+
+const delAcc = (id, res) => {
+  const q = "SELECT business_id from business_account where business_id = ? ";
+  db.query(q, id, (err, accdata) => {
+    if (err) return res.status(500).json(err);
+    if (accdata.length < 1) return false;
+    const q = "DELETE from business_account where business_id = ?";
+    db.query(q, id, (err, data) => {
+      if (err) return res.status(500).json(err);
+    });
+  });
+};
+
 
 const delCust = (id, res) => {
   const q = "SELECT cust_id from customer_module where cust_acc_id = ? ";
@@ -245,8 +266,9 @@ export const delData = (req, res) => {
   delSer(req.params.accId);
   delCash(req.params.accId);
   delExp(req.params.accId);
-  delSale(req.params.accId)
-  delPur(req.params.accId)
+  delSale(req.params.accId);
+  delPur(req.params.accId);
+  delAcc(req.params.accId);
   return res.status(200).json("Deleted Successfully");
 };
 
@@ -258,3 +280,14 @@ export const fetchStaffData = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
+export const newUserLoginData = (req, res) => {
+  const UserQuery = "select login_module.* , business_account.business_id , business_account.access from login_module left join business_account on login_module.log_id = business_account.user_id where log_user = 1 and log_email = ? order by access desc;"
+  db.query(UserQuery, req.params.email, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+

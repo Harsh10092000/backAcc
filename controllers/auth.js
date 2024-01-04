@@ -26,14 +26,15 @@ export const login = (req, res) => {
     console.log("data : " , data);
     if (data.length > 0) {
     if (data[0].log_user === 1) {
-      const UserQuery = "select login_module.* , business_account.business_id from login_module left join business_account on login_module.log_id = business_account.user_id where log_user = 1 and log_email = ? order by business_id asc;"
+      const UserQuery = "select login_module.* , business_account.business_id , business_account.business_id ,business_account.access from login_module left join business_account on login_module.log_id = business_account.user_id where log_user = 1 and log_email = ? order by access desc;"
       db.query(UserQuery, req.body.inputs, (err, data) => {
         console.log("data : " , data);
         if (err) return res.status(500).json(err);
         return res.status(200).json(data);
     });
     } else {
-      const staffQuery = "select login_module.* , staff_parties, staff_bills, staff_inventory, staff_module.staff_user_id, staff_module.staff_acc_id as business_id from login_module left join staff_module on login_module.log_id = staff_module.staff_user_id where log_user = 0 and log_email = ? ;"
+      //const staffQuery = "select login_module.* , staff_parties, staff_bills, staff_inventory, staff_module.staff_user_id, staff_module.staff_acc_id as business_id from login_module left join staff_module on login_module.log_id = staff_module.staff_user_id where log_user = 0 and log_email = ? ;"
+      const staffQuery = "select login_module.* , staff_parties, staff_bills, staff_inventory, staff_module.staff_user_id, staff_module.staff_acc_id as business_id , business_account.access from login_module left join staff_module on login_module.log_id = staff_module.staff_user_id left join business_account on staff_module.staff_acc_id = business_account.business_id where log_user = 0 and log_email = ?;"
       db.query(staffQuery, req.body.inputs, (err, data) => {
         console.log("data : " , data);
         if (err) return res.status(500).json(err);  
@@ -57,3 +58,5 @@ export const login = (req, res) => {
   }
   });
 };
+
+

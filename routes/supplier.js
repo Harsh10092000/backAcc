@@ -71,7 +71,7 @@ router.put("/updateTran/:tranId", upload.single("image"), (req, res) => {
     req.body.sup_tran_description,
     req.body.sup_tran_date,
     
-    req.file ? req.file.filename : "",
+    req.file ? req.file.filename : req.body.image !== "" ? req.body.image : "",
     req.params.tranId
   ];
   console.log("values : ",values , q)

@@ -5,4 +5,5 @@ const router = express.Router();
 
 router.get("/sendmail/:email", sendOtp);
 router.post("/checklog", login);
+
 export default router;
