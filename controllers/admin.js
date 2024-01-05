@@ -29,7 +29,7 @@ export const unrestrictAcc = (req, res) => {
 export const addPayPLan = (req, res) => {
   const q =
     "INSERT into payment_plan_module (`plan_dur`,`plan_price`) VALUES(?)";
-  const values = [req.body.plan_dur, req.body.plan_price];
+  const values = [req.body.plan_dur, req.body.plan_amt];
   console.log("values : ", values);
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
@@ -101,3 +101,14 @@ export const updateCoupon = (req, res) => {
 };
 
 
+
+export const addHsnCode = (req, res) => {
+  const q =
+    "INSERT into convertcsv (`hsn_code`,`hsn_desc`, `cgst`, `sgst` , `igst` , `cess`) VALUES(?)";
+  const values = [req.body.hsn_code, req.body.hsn_desc, req.body.hsn_gst/2, req.body.hsn_gst/2, req.body.hsn_gst, req.body.hsn_cess] ;
+  console.log("values : ", values);
+  // db.query(q, [values], (err, data) => {
+  //   if (err) return res.status(500).json(err);
+  //   return res.status(200).json("INSERTED SUCCESSFULLY");
+  // });
+};
