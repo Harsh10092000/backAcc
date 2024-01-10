@@ -68,6 +68,7 @@ export const sendData = (req, res) => {
 
 export const fetchData = (req, res) => {
   const q = "select supplier_module.*, sum(IFNULL(supplier_tran.sup_tran_pay,0)) - sum(IFNULL(supplier_tran.sup_tran_receive,0)) as sup_total_amt from supplier_tran LEFT JOIN supplier_module ON supplier_tran.sup_tran_cnct_id = supplier_module.sup_id where supplier_module.sup_acc_id = ? group by supplier_tran.sup_tran_cnct_id ;";
+  // const q = "select supplier_module.* , 0 as sup_todatl_amt from supplier_module where sup_acc_id = ?";
   db.query(q, [req.params.accId] , (err, data) => {
     if (err) res.status(500).json(err);
     return res.status(200).json(data);

@@ -1,7 +1,15 @@
 import { db } from "../connect.js";
 
+export const verifyAdmin = (req, res) => {
+  const q = "SELECT * from admin_login where super_email = ?  ";
+  db.query(q, [req.params.email ], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
 export const fetch = (req, res) => {
-  const q = "SELECT * from business_account ";
+  const q = "SELECT business_account.* , login_module.log_email from business_account LEFT JOIN login_module ON login_module.log_id = business_account.user_id ; ";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -15,6 +23,7 @@ export const restrictAcc = (req, res) => {
     return res.status(200).json(data);
   });
 };
+
 
 export const unrestrictAcc = (req, res) => {
   const q = "UPDATE business_account SET access = ? where business_id = ?";
@@ -101,14 +110,99 @@ export const updateCoupon = (req, res) => {
 };
 
 
+export const fetchHsnCodes = (req, res) => {
+  const q = "SELECT * from convertcsv ";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchHsnCodeById = (req, res) => {
+  const q = "SELECT * from convertcsv where id = ?";
+  db.query(q, [req.params.hsnId] , (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
 
 export const addHsnCode = (req, res) => {
   const q =
     "INSERT into convertcsv (`hsn_code`,`hsn_desc`, `cgst`, `sgst` , `igst` , `cess`) VALUES(?)";
   const values = [req.body.hsn_code, req.body.hsn_desc, req.body.hsn_gst/2, req.body.hsn_gst/2, req.body.hsn_gst, req.body.hsn_cess] ;
-  console.log("values : ", values);
-  // db.query(q, [values], (err, data) => {
-  //   if (err) return res.status(500).json(err);
-  //   return res.status(200).json("INSERTED SUCCESSFULLY");
-  // });
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("INSERTED SUCCESSFULLY");
+  });
+};
+
+export const updateHsnCode = (req, res) => {
+  const q =
+    "UPDATE convertcsv SET hsn_code = ? , hsn_desc = ?, cgst = ?, sgst = ?, igst = ?, cess = ?  WHERE id = ?";
+  const values = [req.body.hsn_code, req.body.hsn_desc, req.body.hsn_gst/2 , req.body.hsn_gst/2 , req.body.hsn_gst , req.body.cess , req.params.hsnId];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
+  });
+};
+
+
+export const delHsnCode = (req, res) => {
+  const q = "DELETE from convertcsv where id = ?";
+  const values = req.params.hsnId;
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Deleted Successfully");
+  });
+};
+
+
+
+
+export const fetchSacCodes = (req, res) => {
+  const q = "SELECT * from sac";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchSacCodeById = (req, res) => {
+  const q = "SELECT * from sac where id = ?";
+  db.query(q, [req.params.sacId] , (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+
+export const addSacCode = (req, res) => {
+  const q =
+    "INSERT into sac (`sac_code`,`sac_desc` , `sac_igst` ) VALUES(?)";
+  const values = [req.body.sac_code, req.body.sac_desc, req.body.sac_gst] ;
+  db.query(q, [values], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("INSERTED SUCCESSFULLY");
+  });
+};
+
+
+export const updateSacCode = (req, res) => {
+  const q =
+    "UPDATE sac SET sac_code = ? , sac_desc = ? , sac_igst = ?  WHERE id = ?";
+  const values = [req.body.sac_code, req.body.sac_desc, req.body.sac_gst , req.params.sacId];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
+  });
+};
+
+
+export const delSacCode = (req, res) => {
+  const q = "DELETE from sac where id = ?";
+  const values = req.params.sacId;
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Deleted Successfully");
+  });
 };
