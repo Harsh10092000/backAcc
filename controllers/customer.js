@@ -56,59 +56,17 @@ export const sendData = (req, res) => {
   });
 };
 
-// export const fetchData = (req, res) => {
-//   const q = "SELECT * from customer_module where cust_acc_id = ?";
-//   db.query(q, [req.params.accId] , (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     return res.status(200).json(data);
-//   });
-// };
 
 export const fetchData = (req, res) => {
-  const q = "select customer_module.*, sum(IFNULL(customer_tran.tran_pay,0)) - sum(IFNULL(customer_tran.tran_receive,0)) as cust_total_amt from customer_tran LEFT JOIN customer_module ON customer_tran.cnct_id = customer_module.cust_id where customer_module.cust_acc_id = ? group by customer_tran.cnct_id ;";
+  //const q = "select customer_module.*, sum(IFNULL(customer_tran.tran_pay,0)) - sum(IFNULL(customer_tran.tran_receive,0)) as cust_total_amt from customer_tran LEFT JOIN customer_module ON customer_tran.cnct_id = customer_module.cust_id where customer_module.cust_acc_id = ? group by customer_tran.cnct_id ;";
+  const q = "SELECT customer_module.*, SUM(IFNULL(customer_tran.tran_pay, 0)) - SUM(IFNULL(customer_tran.tran_receive, 0)) AS cust_total_amt FROM customer_module LEFT JOIN customer_tran ON customer_tran.cnct_id = customer_module.cust_id WHERE customer_module.cust_acc_id = ? GROUP BY customer_module.cust_id ; "
   db.query(q, [req.params.accId] , (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
 
-// export const sendTran = (req, res) => {
-//   const q =
-//     "INSERT INTO customer_tran(`tran_pay`,`tran_receive`,`tran_description`,`tran_date`,`cnct_id`,`tran_bill`) VALUES(?)";
-//   const values = [
-//     req.body.tran_pay,
-//     req.body.tran_receive,
-//     req.body.tran_description,
-//     req.body.tran_date,
-//     req.body.cnct_id,
-//     req.body.tran_bill
-//   ];
-//   db.query(q, [values], (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     return res.status(200).json("Transaction has been Entered");
-//   });
-// };
 
-// export const sendTran = (req, res) => {
-//   const q =
-//     "INSERT INTO customer_tran(`tran_pay`,`tran_receive`,`tran_description`,`tran_date`, `balance`, `cnct_id`,`tran_bill`) VALUES(?)";
-
-//     console,log("req.body : " , req.body)
-//   const values = [
-//     req.body.tran_pay,
-//     req.body.tran_receive,
-//     req.body.tran_description,
-//     req.body.tran_date,
-//     req.body.balance,
-//     req.body.cnct_id,
-//     req.body.tran_bill
-//   ];
-//   console.log("values customer js 2" , values)
-//   db.query(q, [values], (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     return res.status(200).json("Transaction has been Entered");
-//   });
-// };
 
 export const fetchTran = (req, res) => {
   const q = "SELECT * from customer_tran where cnct_id = ? order by tran_id DESC";
@@ -210,23 +168,7 @@ export const deleteTran = (req, res) => {
   });
 };
 
-// export const updateTran = (req, res) => {
 
-//   const q =
-//     "UPDATE customer_tran SET tran_pay = ?, tran_receive = ? , tran_description = ? , tran_date = ? , balance = ? where tran_id = ?";
-//   const values = [
-//     req.body.tran_pay,
-//     req.body.tran_receive,
-//     req.body.tran_description,
-//     req.body.tran_date,
-//     req.body.balance,
-//     req.params.tranId,
-//   ];
-//   db.query(q, values, (err, data) => {
-//     if (err) return res.status(500).json(err);
-//     return res.status(200).json("Updated Successfully");
-//   });
-// };
 
 export const fetchTranid = (req, res) => {
   const q = "SELECT * from customer_tran where tran_id = ?";

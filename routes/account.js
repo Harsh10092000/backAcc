@@ -1,5 +1,5 @@
 import express from "express";
-import { delData, fetchData, fetch, fetchStaffData, checkAcc,newUserLoginData } from "../controllers/account.js";
+import { delData, fetchData, fetch, fetchStaffData, checkAcc,newUserLoginData, fetchAccessData } from "../controllers/account.js";
 import multer from "multer";
 import path from "path";
 import { db } from "../connect.js";
@@ -90,7 +90,8 @@ router.get("/fetchData/:accId", fetchData);
 router.delete("/delData/:accId", delData);
 router.get("/fetch/:uId",fetch);
 router.get("/fetchStaffData/:uId",fetchStaffData);
-// router.put("/updateAccData/:uId",updateAccData);
+
 router.get("/checkAcc/:uId",checkAcc);
 router.get("/newUserLoginData/:email" , newUserLoginData);
+router.get("/fetchAccessData/:accId" , fetchAccessData);
 export default router;

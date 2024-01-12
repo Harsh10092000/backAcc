@@ -18,9 +18,16 @@ import { db } from "../connect.js";
 // };
 
 export const fetch = (req, res) => {
-  console.log(req.params.uId)
   const q = "SELECT * from business_account where user_id = ? ";
   db.query(q, [req.params.uId], (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchAccessData = (req, res) => {
+  const q = "SELECT access from business_account where business_id = ? ";
+  db.query(q, [req.params.accId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
