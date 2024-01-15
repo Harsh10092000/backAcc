@@ -20,7 +20,7 @@ export const addPurchase = (req, res) => {
     if (err) return res.status(500).json(err);
     const id1 = data.insertId;
     const q2 =
-      "INSERT INTO purchase_tran (`purchase_tax`, `purchase_cnct_id`, `purchase_item_name`, `purchase_item_qty`, `purchase_item_price`, `purchase_item_code` ,`purchase_item_unit` , `purchase_item_disc_unit` , `purchase_item_disc_val` , `purchase_item_disc_price` , `purchase_item_gst` , `purchase_item_gst_amt` , purchase_item_cnct_id) Values ?";
+      "INSERT INTO purchase_tran (`purchase_tax`, `purchase_cnct_id`, `purchase_item_name`, `purchase_item_qty`, `purchase_item_price`, `purchase_item_code` ,`purchase_item_unit` , `purchase_item_disc_unit` , `purchase_item_disc_val` , `purchase_item_disc_price` , `purchase_item_gst` , `purchase_item_cess` , `purchase_item_gst_amt` , purchase_item_cnct_id) Values ?";
     const values2 = req.body.invoiceItemsList.map((values) => [
       values.in_tax,
       id1,
@@ -33,6 +33,7 @@ export const addPurchase = (req, res) => {
       values.in_discount_value,
       values.in_discount_price,
       values.in_gst_prectentage,
+      values.in_cess_prectentage,
       values.in_gst_amt,
       values.in_id,
     ]);
@@ -118,7 +119,7 @@ export const updatePurchaseItems = (req, res) => {
   console.log(req.body);
 
   const q2 =
-    "INSERT INTO purchase_tran (`purchase_tax`, `purchase_cnct_id`, `purchase_item_name`, `purchase_item_qty`, `purchase_item_price`, `purchase_item_code` ,`purchase_item_unit` , `purchase_item_disc_unit` , `purchase_item_disc_val` , `purchase_item_disc_price` , `purchase_item_gst` , `purchase_item_gst_amt` , purchase_item_cnct_id) Values ?";
+    "INSERT INTO purchase_tran (`purchase_tax`, `purchase_cnct_id`, `purchase_item_name`, `purchase_item_qty`, `purchase_item_price`, `purchase_item_code` ,`purchase_item_unit` , `purchase_item_disc_unit` , `purchase_item_disc_val` , `purchase_item_disc_price` , `purchase_item_gst` , `purchase_item_cess` , `purchase_item_gst_amt` , purchase_item_cnct_id) Values ?";
   const values2 = req.body.invoiceItemsList.map((values) => [
     values.in_tax,
     req.body.purchase_id,
@@ -131,6 +132,7 @@ export const updatePurchaseItems = (req, res) => {
     values.in_discount_value,
     values.in_discount_price,
     values.in_gst_prectentage,
+    values.in_cess_prectentage,
     values.in_gst_amt,
     values.in_id,
   ]);

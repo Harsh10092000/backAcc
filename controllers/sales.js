@@ -20,7 +20,7 @@ export const addSales = (req, res) => {
     if (err) return res.status(500).json(err);
     const id1 = data.insertId;
     const q2 =
-      "INSERT INTO sale_tran ( `sale_cnct_id`, `sale_item_name`, `sale_item_qty`, `sale_item_price`, `sale_item_code` ,`sale_item_unit` , `sale_item_disc_unit` , `sale_item_disc_val` , `sale_item_disc_price` , `sale_item_gst` , `sale_item_gst_amt`, `sale_item_type`, `sale_item_cnct_id`, `sale_tax`) Values ?";
+      "INSERT INTO sale_tran ( `sale_cnct_id`, `sale_item_name`, `sale_item_qty`, `sale_item_price`, `sale_item_code` ,`sale_item_unit` , `sale_item_disc_unit` , `sale_item_disc_val` , `sale_item_disc_price` , `sale_item_gst` , `sale_item_cess`  , `sale_item_gst_amt`, `sale_item_type`, `sale_item_cnct_id`, `sale_tax`) Values ?";
     const values2 = req.body.invoiceItemsList.map((values) => [
       id1,
       values.in_items,
@@ -32,6 +32,7 @@ export const addSales = (req, res) => {
       values.in_discount_value,
       values.in_discount_price,
       values.in_gst_prectentage,
+      values.in_cess_prectentage,
       values.in_gst_amt,
       values.sale_item_type,
       values.in_id,
@@ -441,10 +442,8 @@ export const invoiceSerItemList = (req, res) => {
 
 
 export const updateSaleItems = (req, res) => {
-  console.log(req.body);
-  
     const q2 =
-    "INSERT INTO sale_tran (`sale_tax`, `sale_cnct_id`, `sale_item_name`, `sale_item_qty`, `sale_item_price`, `sale_item_code` ,`sale_item_unit` , `sale_item_disc_unit` , `sale_item_disc_val` , `sale_item_disc_price` , `sale_item_gst` , `sale_item_gst_amt` , `sale_item_cnct_id`, `sale_item_type`) Values ?";
+    "INSERT INTO sale_tran (`sale_tax`, `sale_cnct_id`, `sale_item_name`, `sale_item_qty`, `sale_item_price`, `sale_item_code` ,`sale_item_unit` , `sale_item_disc_unit` , `sale_item_disc_val` , `sale_item_disc_price` , `sale_item_gst` , `sale_item_cess` , `sale_item_gst_amt` , `sale_item_cnct_id`, `sale_item_type`) Values ?";
   const values2 = req.body.invoiceItemsList.map((values) => [
     values.in_tax,
     req.body.sale_id,
@@ -457,6 +456,7 @@ export const updateSaleItems = (req, res) => {
     values.in_discount_value,
     values.in_discount_price,
     values.in_gst_prectentage,
+    values.in_cess_prectentage,
     values.in_gst_amt,
     values.in_id,
     values.sale_item_type,
