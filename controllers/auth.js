@@ -26,7 +26,7 @@ export const sendOtp = (req, res) => {
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
-        return res.status(200).json("OTP Send");
+        return res.status(200).json("OTP Sent");
       });
     } 
 

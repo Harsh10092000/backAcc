@@ -597,7 +597,7 @@ export const updateSaleModuleTran = (req, res) => {
 
 export const returnSale = (req, res) => {
   let id2 = 0;
-  if (req.body.sale_amt_type !== "unpaid") {
+  //if (req.body.sale_amt_type !== "unpaid") {
     const q1 =
       "INSERT INTO sale_module (`sale_prefix` , `sale_prefix_no` , `sale_name` , `sale_date` , `cust_cnct_id` , `sale_amt_type` ,  `sale_amt_paid` , `sale_re_id` , `sale_re_prefix` , `sale_re_prefix_no` , `sale_acc_id`  ) VALUES(?)";
     const values1 = [
@@ -695,9 +695,9 @@ export const returnSale = (req, res) => {
         }
       });
     });
-  } else {
-    return res.status(200).json("Transaction has been Entered");
-  }
+  // } else {
+  //   return res.status(200).json("Transaction has been Entered");
+  // }
 };
 
 export const fetchSaleReturnPrefixData = (req, res) => {

@@ -600,7 +600,7 @@ export const delPurchaseReturn = (req, res) => {
 };
 
 export const returnPurchase = (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
 
   // const q2 =
   //   "INSERT INTO purchase_tran (`purchase_tax`, `purchase_cnct_id`, `purchase_item_name`, `purchase_item_qty`, `purchase_item_price`, `purchase_item_code` ,`purchase_item_unit` , `purchase_item_disc_unit` , `purchase_item_disc_val` , `purchase_item_disc_price` , `purchase_item_gst` , `purchase_item_gst_amt` , purchase_item_cnct_id) Values ?";
@@ -625,7 +625,7 @@ export const returnPurchase = (req, res) => {
 
   let id2 = 0;
 
-  if (req.body.purchase_amt_type !== "unpaid") {
+  //if (req.body.purchase_amt_type !== "unpaid") {
     const q1 =
       "INSERT INTO purchase_module (`purchase_prefix` , `purchase_prefix_no` , `purchase_name` , `purchase_date` , `sup_cnct_id` , `purchase_amt_type` ,  `purchase_amt_paid` , `purchase_re_id` , `purchase_re_prefix` , `purchase_re_prefix_no` , `purchase_acc_id`  ) VALUES(?)";
     const values1 = [
@@ -692,9 +692,9 @@ export const returnPurchase = (req, res) => {
         });
       });
     });
-  } else {
-    return res.status(200).json("Transaction has been Entered");
-  }
+  // } else {
+  //   return res.status(200).json("Transaction has been Entered");
+  // }
 
   //});
 };
