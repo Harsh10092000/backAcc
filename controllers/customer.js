@@ -5,6 +5,7 @@ export const sendData = (req, res) => {
   db.query(q, [req.body.cust_number , req.body.cust_acc_id], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data.length) return res.status(409).json("User Already Exists");
+    console.log("req.body : " , req.body)
     const q =
       "INSERT INTO customer_module (`cust_name`,`cust_number`,`cust_amt`,`amt_type`,`cust_gstin`,`cust_sflat`,`cust_sarea`,`cust_spin`,`cust_scity`,`cust_sstate`,`cust_bflat`,`cust_barea`,`cust_bpin`,`cust_bcity`,`cust_bstate`, `cust_acc_id`) Values (?)";
     const values = [
