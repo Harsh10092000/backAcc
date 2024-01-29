@@ -11,7 +11,7 @@ const updateOtp = (otp, email, res) => {
 export const sendOtp = (req, res) => {
   var otp = Math.floor(100000 + Math.random() * 900000);
   let info = {
-    from: '"Khataease " <Khataease.calinfo007@gmail.com>', // sender address
+    from: '"Khataease " <noreply@khataease.com>', // sender address
     to: req.params.email, // list of receivers
     subject: "Hello ✔", // Subject line
     html: `Otp is <b>${otp}</b> and you can use this to login into our system`, // html body
