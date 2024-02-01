@@ -66,7 +66,8 @@ export const fetchCash = (req, res) => {
 };
 
 export const fetchSales = (req, res) => {
-  const q = "SELECT * from sale_module WHERE sale_payment_in_prefix IS NULL and sale_acc_id = ? ";
+  //const q = "SELECT * from sale_module WHERE sale_payment_in_prefix IS NULL and sale_acc_id = ? ";
+  const q = "SELECT * from sale_module WHERE sale_acc_id = ? ";
   db.query(q, [req.params.accId] , (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);

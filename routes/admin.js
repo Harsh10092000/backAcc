@@ -24,7 +24,13 @@ import {
     addSacCode,
     fetchSacCodeById,
     updateSacCode,
-    delSacCode
+    delSacCode,
+
+    fetchModerator,
+    fetchModeratorById,
+    delModerator,
+    addModerator,
+    editModerator
 } from "../controllers/admin.js";
 const router = express.Router();
 
@@ -62,4 +68,10 @@ router.post("/addSacCode" , addSacCode);
 router.put("/updateSacCode/:sacId" , updateSacCode);
 router.delete("/delSacCode/:sacId", delSacCode);
 
+//moderator
+router.get("/fetchModerator" , fetchModerator);
+router.get("/fetchModeratorById/:modId" , fetchModeratorById);
+router.delete("/delModerator/:modId", delModerator);
+router.post("/addModerator" , addModerator);
+router.put("/editModerator/:modId", editModerator);
 export default router;

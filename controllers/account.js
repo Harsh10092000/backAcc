@@ -57,7 +57,6 @@ export const fetchAccessData = (req, res) => {
 //   });
 // };
 
-
 export const fetchData = (req, res) => {
   const q = "SELECT * from business_account where business_id = ? ";
   db.query(q, [req.params.accId], (err, data) => {
@@ -66,16 +65,14 @@ export const fetchData = (req, res) => {
   });
 };
 
-
 export const checkAcc = (req, res) => {
-  const q = "select user_id from business_account where user_id = ? union select staff_user_id from staff_module where staff_user_id = ?;";
+  const q =
+    "select user_id from business_account where user_id = ? union select staff_user_id from staff_module where staff_user_id = ?;";
   db.query(q, [req.params.uId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
-
-
 
 // export const delData = (req, res) => {
 //   const q = "DELETE from business_account where business_id = ?";
@@ -89,7 +86,7 @@ export const checkAcc = (req, res) => {
 // const delAcc = (id, res) => {
 //   const q = "DELETE business_account.* where business_id = ?";
 //   db.query(q, id, (err, data) => {
-//     if (err) return res.status(500).json(err); 
+//     if (err) return res.status(500).json(err);
 //   });
 // };
 
@@ -105,7 +102,6 @@ const delAcc = (id, res) => {
   });
 };
 
-
 const delCust = (id, res) => {
   const q = "SELECT cust_id from customer_module where cust_acc_id = ? ";
 
@@ -115,9 +111,9 @@ const delCust = (id, res) => {
     const q = "DELETE from customer_module where cust_acc_id = ?";
     db.query(q, id, (err, data) => {
       if (err) return res.status(500).json(err);
-      
+
       custdata.map((item) => {
-        console.log(item.cust_id)
+        console.log(item.cust_id);
         const q = "DELETE from customer_tran where cnct_id = ?";
         db.query(q, item.cust_id, (err, data) => {
           if (err) return res.status(500).json(err);
@@ -246,9 +242,9 @@ const delSale = (id, res) => {
   });
 };
 
-
 const delPur = (id, res) => {
-  const q = "SELECT purchase_id from purchase_module where purchase_acc_id = ? ";
+  const q =
+    "SELECT purchase_id from purchase_module where purchase_acc_id = ? ";
   db.query(q, id, (err, purdata) => {
     if (err) return res.status(500).json(err);
     if (purdata.length < 1) return false;
@@ -265,6 +261,29 @@ const delPur = (id, res) => {
   });
 };
 
+const delStaff = (id, res) => {
+  const q =
+    "SELECT staff_user_id , staff_id from staff_module where staff_acc_id = ? ";
+  db.query(q, id, (err, accdata) => {
+    if (err) return res.status(500).json(err);
+
+    if (accdata.length < 1) return false;
+    const q = "DELETE from staff_module where staff_acc_id = ?";
+    db.query(q, id, (err, data) => {
+      if (err) return res.status(500).json(err);
+      accdata.map((item) => {
+        console.log("item.staff_user_id : ", item.staff_user_id);
+        const q = "DELETE from login_module where log_id = ?";
+        db.query(q, item.staff_user_id, (err, data) => {
+          if (err) return res.status(500).json(err);
+          
+        });
+      });
+    });
+  });
+};
+
+
 
 export const delData = (req, res) => {
   delCust(req.params.accId);
@@ -276,9 +295,9 @@ export const delData = (req, res) => {
   delSale(req.params.accId);
   delPur(req.params.accId);
   delAcc(req.params.accId);
+  delStaff(req.params.accId);
   return res.status(200).json("Deleted Successfully");
 };
-
 
 export const fetchStaffData = (req, res) => {
   const q = "SELECT * from staff_module where staff_user_id = ? ";
@@ -289,12 +308,10 @@ export const fetchStaffData = (req, res) => {
 };
 
 export const newUserLoginData = (req, res) => {
-  const UserQuery = "select login_module.* , business_account.business_id , business_account.access from login_module left join business_account on login_module.log_id = business_account.user_id where log_user = 1 and log_email = ? order by access desc;"
+  const UserQuery =
+    "select login_module.* , business_account.business_id , business_account.access from login_module left join business_account on login_module.log_id = business_account.user_id where log_user = 1 and log_email = ? order by access desc;";
   db.query(UserQuery, req.params.email, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
-
-
-

@@ -91,9 +91,9 @@ export const sendOtp = (req, res) => {
     } else {
       var otp = Math.floor(100000 + Math.random() * 900000);
       const info = {
-        from: '"Foo Faa 👻" <rakshita.mathexpert@gmail.com>', // sender address
+        from: '"Khataease " <noreply@khataease.com>', // sender address
         to: req.params.email, // list of receivers
-        subject: "Hello ✔", // Subject line
+        subject: "khataease", // Subject line
         html: `Otp is <b>${otp}</b> and you can use this to login into our system`, // html body
       };
       transporter.sendMail(info, (err, data) => {

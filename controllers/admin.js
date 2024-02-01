@@ -1,15 +1,24 @@
 import { db } from "../connect.js";
 
+// export const verifyAdmin = (req, res) => {
+//   const q = "SELECT * from admin_login where super_email = ?  ";
+//   db.query(q, [req.params.email], (err, data) => {
+//     if (err) return res.status(500).json(err);
+//     return res.status(200).json(data);
+//   });
+// };
+
 export const verifyAdmin = (req, res) => {
-  const q = "SELECT * from admin_login where super_email = ?  ";
-  db.query(q, [req.params.email ], (err, data) => {
+  const q = "SELECT admin_login.* , moderator_module.* from admin_login left join moderator_module on admin_login.super_cnct_id = moderator_module.mod_id where admin_login.super_email = ?";
+  db.query(q, [req.params.email], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
 
 export const fetch = (req, res) => {
-  const q = "SELECT business_account.* , login_module.log_email from business_account LEFT JOIN login_module ON login_module.log_id = business_account.user_id ; ";
+  const q =
+    "SELECT business_account.* , login_module.log_email from business_account LEFT JOIN login_module ON login_module.log_id = business_account.user_id ; ";
   db.query(q, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
@@ -24,7 +33,6 @@ export const restrictAcc = (req, res) => {
   });
 };
 
-
 export const unrestrictAcc = (req, res) => {
   const q = "UPDATE business_account SET access = ? where business_id = ?";
   db.query(q, [req.body.unrestrict, req.params.id], (err, data) => {
@@ -32,8 +40,6 @@ export const unrestrictAcc = (req, res) => {
     return res.status(200).json(data);
   });
 };
-
-
 
 export const addPayPLan = (req, res) => {
   const q =
@@ -53,7 +59,6 @@ export const fetchPayPlan = (req, res) => {
     return res.status(200).json(data);
   });
 };
-
 
 export const delPayPLan = (req, res) => {
   const q = "DELETE from payment_plan_module where plan_id = ?";
@@ -76,7 +81,11 @@ export const updatePayPLan = (req, res) => {
 export const addCoupon = (req, res) => {
   const q =
     "INSERT into offer_code_module (`code_name`,`code_value`, `code_type`) VALUES(?)";
-  const values = [req.body.offer_code, req.body.offer_value , req.body.offer_type];
+  const values = [
+    req.body.offer_code,
+    req.body.offer_value,
+    req.body.offer_type,
+  ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("INSERTED SUCCESSFULLY");
@@ -97,18 +106,22 @@ export const delCoupon = (req, res) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
-}
+};
 
 export const updateCoupon = (req, res) => {
   const q =
     "UPDATE offer_code_module SET offer_code = ? , offer_value = ? , offer_type = ?  WHERE code_id = ?";
-  const values = [req.body.offer_code, req.body.offer_value, req.body.offer_type , req.body.code_id];
+  const values = [
+    req.body.offer_code,
+    req.body.offer_value,
+    req.body.offer_type,
+    req.body.code_id,
+  ];
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Updated Successfully");
   });
 };
-
 
 export const fetchHsnCodes = (req, res) => {
   const q = "SELECT * from convertcsv ";
@@ -120,7 +133,7 @@ export const fetchHsnCodes = (req, res) => {
 
 export const fetchHsnCodeById = (req, res) => {
   const q = "SELECT * from convertcsv where id = ?";
-  db.query(q, [req.params.hsnId] , (err, data) => {
+  db.query(q, [req.params.hsnId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
@@ -129,7 +142,14 @@ export const fetchHsnCodeById = (req, res) => {
 export const addHsnCode = (req, res) => {
   const q =
     "INSERT into convertcsv (`hsn_code`,`hsn_desc`, `cgst`, `sgst` , `igst` , `cess`) VALUES(?)";
-  const values = [req.body.hsn_code, req.body.hsn_desc, req.body.hsn_gst/2, req.body.hsn_gst/2, req.body.hsn_gst, req.body.hsn_cess] ;
+  const values = [
+    req.body.hsn_code,
+    req.body.hsn_desc,
+    req.body.hsn_gst / 2,
+    req.body.hsn_gst / 2,
+    req.body.hsn_gst,
+    req.body.hsn_cess,
+  ];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("INSERTED SUCCESSFULLY");
@@ -139,13 +159,20 @@ export const addHsnCode = (req, res) => {
 export const updateHsnCode = (req, res) => {
   const q =
     "UPDATE convertcsv SET hsn_code = ? , hsn_desc = ?, cgst = ?, sgst = ?, igst = ?, cess = ?  WHERE id = ?";
-  const values = [req.body.hsn_code, req.body.hsn_desc, req.body.hsn_gst/2 , req.body.hsn_gst/2 , req.body.hsn_gst , req.body.cess , req.params.hsnId];
+  const values = [
+    req.body.hsn_code,
+    req.body.hsn_desc,
+    req.body.hsn_gst / 2,
+    req.body.hsn_gst / 2,
+    req.body.hsn_gst,
+    req.body.cess,
+    req.params.hsnId,
+  ];
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Updated Successfully");
   });
 };
-
 
 export const delHsnCode = (req, res) => {
   const q = "DELETE from convertcsv where id = ?";
@@ -155,9 +182,6 @@ export const delHsnCode = (req, res) => {
     return res.status(200).json("Deleted Successfully");
   });
 };
-
-
-
 
 export const fetchSacCodes = (req, res) => {
   const q = "SELECT * from sac";
@@ -169,34 +193,35 @@ export const fetchSacCodes = (req, res) => {
 
 export const fetchSacCodeById = (req, res) => {
   const q = "SELECT * from sac where id = ?";
-  db.query(q, [req.params.sacId] , (err, data) => {
+  db.query(q, [req.params.sacId], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(data);
   });
 };
 
-
 export const addSacCode = (req, res) => {
-  const q =
-    "INSERT into sac (`sac_code`,`sac_desc` , `sac_igst` ) VALUES(?)";
-  const values = [req.body.sac_code, req.body.sac_desc, req.body.sac_gst] ;
+  const q = "INSERT into sac (`sac_code`,`sac_desc` , `sac_igst` ) VALUES(?)";
+  const values = [req.body.sac_code, req.body.sac_desc, req.body.sac_gst];
   db.query(q, [values], (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("INSERTED SUCCESSFULLY");
   });
 };
 
-
 export const updateSacCode = (req, res) => {
   const q =
     "UPDATE sac SET sac_code = ? , sac_desc = ? , sac_igst = ?  WHERE id = ?";
-  const values = [req.body.sac_code, req.body.sac_desc, req.body.sac_gst , req.params.sacId];
+  const values = [
+    req.body.sac_code,
+    req.body.sac_desc,
+    req.body.sac_gst,
+    req.params.sacId,
+  ];
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Updated Successfully");
   });
 };
-
 
 export const delSacCode = (req, res) => {
   const q = "DELETE from sac where id = ?";
@@ -204,5 +229,79 @@ export const delSacCode = (req, res) => {
   db.query(q, values, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json("Deleted Successfully");
+  });
+};
+
+export const fetchModerator = (req, res) => {
+  const q = "SELECT * from moderator_module";
+  db.query(q, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const fetchModeratorById = (req, res) => {
+  const q = "SELECT * from moderator_module where mod_id = ?";
+  db.query(q, req.params.modId, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json(data);
+  });
+};
+
+export const delModerator = (req, res) => {
+  const q = "DELETE from moderator_module where mod_id = ?";
+  const values = req.params.modId;
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Deleted Successfully");
+  });
+};
+
+export const addModerator = (req, res) => {
+  const checkEmail = "select * from admin_login where super_email = ?";
+  db.query(checkEmail, [req.body.mod_email], (err, data) => {
+    if (err) return res.status(500).json(err);
+    console.log("data.length : " , data.length, typeof(data.length));
+    if (data.length === 0) {
+      const q =
+        "INSERT into moderator_module (`mod_name`, `mod_email` , `mod_accounts`, `mod_gst`, `mod_payplan`) VALUES(?)";
+      const values = [
+        req.body.mod_name,
+        req.body.mod_email,
+        req.body.mod_accounts,
+        req.body.mod_gst,
+        req.body.mod_payplan,
+      ];
+      db.query(q, [values], (err, data) => {
+        var modId = data.insertId;
+        if (err) return res.status(500).json(err);
+        const addInToAdmin =
+          "INSERT into admin_login (`super_email`, `super_type`, `super_cnct_id`) VALUES(?)";
+        const values = [req.body.mod_email, req.body.super_type, modId];
+        db.query(addInToAdmin, [values], (err, data) => {
+          if (err) return res.status(500).json(err);
+          return res.status(200).json("INSERTED SUCCESSFULLY");
+        });
+      });
+    } else {
+      return res.status(200).json("Email Already Exists");
+    }
+  });
+};
+
+export const editModerator = (req, res) => {
+  const q =
+    "UPDATE moderator_module SET mod_name = ? , mod_email = ? , mod_accounts = ?, mod_gst = ? , mod_payplan = ?  WHERE mod_id = ?";
+  const values = [
+    req.body.mod_name,
+    req.body.mod_email,
+    req.body.mod_accounts,
+    req.body.mod_gst,
+    req.body.mod_payplan,
+    req.params.modId,
+  ];
+  db.query(q, values, (err, data) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json("Updated Successfully");
   });
 };

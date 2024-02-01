@@ -13,7 +13,7 @@ export const sendOtp = (req, res) => {
   let info = {
     from: '"Khataease " <noreply@khataease.com>', // sender address
     to: req.params.email, // list of receivers
-    subject: "Hello ✔", // Subject line
+    subject: "Khataease", // Subject line
     html: `Otp is <b>${otp}</b> and you can use this to login into our system`, // html body
   };
   
@@ -22,7 +22,6 @@ export const sendOtp = (req, res) => {
   db.query(q, [req.params.email], (err, data) => {
     if (err) return res.status(500).json(err);
     if (data[0].count_log_id !== 0) {
-      //return res.status(200).json(data);
       updateOtp(otp, req.params.email);
       transporter.sendMail(info, (err, data) => {
         if (err) return res.status(500).json(err);
